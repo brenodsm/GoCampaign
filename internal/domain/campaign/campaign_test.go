@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/brenodsm/GoCampaign/internal/apperror"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -17,16 +18,26 @@ func Test_NewCampaign_CreateCampaign(t *testing.T) {
 		output  error
 	}{
 		{
-			desc: "valid input", name: "Campaign X", content: "body", emails: []string{"email@gmail.com", "email2@gmail.com"}, output: nil,
+			desc: "should create campaign with valid input", name: "Campaign X", content: "body", emails: []string{"email@gmail.com", "email2@gmail.com"}, output: nil,
 		},
 		{
-			desc: "empty name", name: "  ", content: "Body", emails: []string{"email@gmail.com", "email2@gmail.com"}, output: errNameEmpty,
+			desc: "should return required field error when name is empt", name: "  ", content: "body", emails: []string{"email@gmail.com", "email2@gmail.com"}, output: apperror.ErrRequiredField,
 		},
 		{
-			desc: "empty content", name: "Campaign X", content: " ", emails: []string{"email@gmail.com"}, output: errContentEmpty,
+			desc: "should return min value error when name is too short", name: "tt", content: "body", emails: []string{"email@gmail.com"},
+			output: apperror.ErrMinValueNotReached,
 		},
 		{
-			desc: "empty emails", name: "Campaign X", content: "body", emails: []string{}, output: errContactsEmpty,
+			desc: "should return required field error when content is empty", name: "Campaign X", content: " ", emails: []string{"email@gmail.com"}, output: apperror.ErrRequiredField,
+		},
+		{
+			desc: "should return min value error when content is too short", name: "Campaign X", content: "tt", emails: []string{"email@gmail.com"}, output: apperror.ErrMinValueNotReached,
+		},
+		{
+			desc: "should return min value error when no emails are provided", name: "Campaign X", content: "body", emails: []string{}, output: apperror.ErrMinValueNotReached,
+		},
+		{
+			desc: "should return invalid email error when email is malformed", name: "Campaign X", content: "body", emails: []string{"emailgmail.com"}, output: apperror.ErrInvalidEmail,
 		},
 	}
 
