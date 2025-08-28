@@ -26,6 +26,7 @@ func main() {
 	}
 
 	r.Post("/campaigns", handler.CampaignPost)
+	r.Get("/campaigns", handler.CampaignsGet)
 
 	http.ListenAndServe(":5000", r)
 }
