@@ -18,6 +18,10 @@ func (r *repositoryMock) Save(campaing *Campaign) error {
 	return args.Error(0)
 }
 
+func (r *repositoryMock) GetAll() ([]Campaign, error) {
+	return nil, nil
+}
+
 func TestCreateCampaign(t *testing.T) {
 	t.Parallel()
 	campaign := dto.CampaignDTO{
