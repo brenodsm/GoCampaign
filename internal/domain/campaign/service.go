@@ -21,3 +21,7 @@ func (s *Service) Create(campaignDTO dto.CampaignDTO) (string, error) {
 	}
 	return campaign.ID, nil
 }
+
+func (s *Service) ListAll() ([]Campaign, error) {
+	return s.Repository.GetAll()
+}
