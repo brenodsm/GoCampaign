@@ -15,36 +15,37 @@ func Test_NewCampaign_CreateCampaign(t *testing.T) {
 		name    string
 		content string
 		emails  []string
+		Status  string
 		output  error
 	}{
 		{
-			desc: "should create campaign with valid input", name: "Campaign X", content: "body", emails: []string{"email@gmail.com", "email2@gmail.com"}, output: nil,
+			desc: "should create campaign with valid input", name: "Campaign X", content: "body", emails: []string{"email@gmail.com", "email2@gmail.com"}, Status: StatusPending, output: nil,
 		},
 		{
-			desc: "should return required field error when name is empt", name: "  ", content: "body", emails: []string{"email@gmail.com", "email2@gmail.com"}, output: apperror.ErrRequiredField,
+			desc: "should return required field error when name is empt", name: "  ", content: "body", emails: []string{"email@gmail.com", "email2@gmail.com"}, Status: StatusPending, output: apperror.ErrRequiredField,
 		},
 		{
-			desc: "should return min value error when name is too short", name: "tt", content: "body", emails: []string{"email@gmail.com"},
+			desc: "should return min value error when name is too short", name: "tt", content: "body", emails: []string{"email@gmail.com"}, Status: StatusPending,
 			output: apperror.ErrMinValueNotReached,
 		},
 		{
-			desc: "should return required field error when content is empty", name: "Campaign X", content: " ", emails: []string{"email@gmail.com"}, output: apperror.ErrRequiredField,
+			desc: "should return required field error when content is empty", name: "Campaign X", content: " ", emails: []string{"email@gmail.com"}, Status: StatusPending, output: apperror.ErrRequiredField,
 		},
 		{
-			desc: "should return min value error when content is too short", name: "Campaign X", content: "tt", emails: []string{"email@gmail.com"}, output: apperror.ErrMinValueNotReached,
+			desc: "should return min value error when content is too short", name: "Campaign X", content: "tt", emails: []string{"email@gmail.com"}, Status: StatusPending, output: apperror.ErrMinValueNotReached,
 		},
 		{
-			desc: "should return min value error when no emails are provided", name: "Campaign X", content: "body", emails: []string{}, output: apperror.ErrMinValueNotReached,
+			desc: "should return min value error when no emails are provided", name: "Campaign X", content: "body", emails: []string{}, Status: StatusPending, output: apperror.ErrMinValueNotReached,
 		},
 		{
-			desc: "should return invalid email error when email is malformed", name: "Campaign X", content: "body", emails: []string{"emailgmail.com"}, output: apperror.ErrInvalidEmail,
+			desc: "should return invalid email error when email is malformed", name: "Campaign X", content: "body", emails: []string{"emailgmail.com"}, Status: StatusPending, output: apperror.ErrInvalidEmail,
 		},
 	}
 
 	for _, tC := range testCases {
-		tC := tC
 		t.Run(tC.desc, func(t *testing.T) {
 			t.Parallel()
+			tC := tC
 			campaign, err := NewCampaign(tC.name, tC.content, tC.emails)
 
 			if tC.output == nil {
@@ -52,6 +53,7 @@ func Test_NewCampaign_CreateCampaign(t *testing.T) {
 				assert.WithinDuration(t, now, campaign.CreatedOn, 1*time.Second)
 
 				assert.NoError(t, err)
+				assert.Equal(t, StatusPending, tC.Status)
 				assert.NotEmpty(t, campaign.ID)
 			} else {
 				assert.ErrorIs(t, err, tC.output)
