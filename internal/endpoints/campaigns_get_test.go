@@ -47,18 +47,20 @@ func TestCampaignGet(t *testing.T) {
 	}
 
 	for _, tC := range testCases {
-		t.Parallel()
-		tC := tC
-		w := httptest.NewRecorder()
-		req := httptest.NewRequest(http.MethodGet, "/campaings", nil)
+		t.Run(tC.desc, func(t *testing.T) {
+			t.Parallel()
+			tC := tC
+			w := httptest.NewRecorder()
+			req := httptest.NewRequest(http.MethodGet, "/campaings", nil)
 
-		mockService := new(campaignServiceMock)
-		handler := endpoints.Handler{CampaignService: mockService}
-		mockService.On("ListAll").Return(tC.mockReturnData, tC.mockReturnErr)
+			mockService := new(campaignServiceMock)
+			handler := endpoints.Handler{CampaignService: mockService}
+			mockService.On("ListAll").Return(tC.mockReturnData, tC.mockReturnErr)
 
-		handler.CampaignsGet(w, req)
+			handler.CampaignsGet(w, req)
 
-		assert.Equal(t, tC.expectedStatusCode, w.Code)
+			assert.Equal(t, tC.expectedStatusCode, w.Code)
+		})
 
 	}
 
