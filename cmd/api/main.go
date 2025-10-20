@@ -6,8 +6,8 @@ import (
 	"github.com/brenodsm/GoCampaign/internal/domain/campaign"
 	"github.com/brenodsm/GoCampaign/internal/endpoints"
 	"github.com/brenodsm/GoCampaign/internal/infrastructure/database"
-	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 func main() {
