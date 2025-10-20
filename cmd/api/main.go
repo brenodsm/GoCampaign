@@ -6,7 +6,7 @@ import (
 	"github.com/brenodsm/GoCampaign/internal/domain/campaign"
 	"github.com/brenodsm/GoCampaign/internal/endpoints"
 	"github.com/brenodsm/GoCampaign/internal/infrastructure/database"
-	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -27,6 +27,7 @@ func main() {
 
 	r.Post("/campaigns", handler.CampaignPost)
 	r.Get("/campaigns", handler.CampaignsGet)
+	r.Get("/campaign/{id}", handler.CampaignGetByID)
 
 	http.ListenAndServe(":5000", r)
 }

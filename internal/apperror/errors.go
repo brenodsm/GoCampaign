@@ -10,4 +10,5 @@ var (
 	ErrMinValueNotReached error = errors.New("value below min limit")
 	ErrInvalidEmail       error = errors.New("invalid email")
 	ErrInvalidField       error = errors.New("invalid field")
+	ErrCampaignNotFound   error = errors.New("campaign not found")
 )

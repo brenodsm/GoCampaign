@@ -1,6 +1,7 @@
 package campaign
 
 import (
+	"errors"
 	"testing"
 
 	"github.com/brenodsm/GoCampaign/internal/apperror"
@@ -20,6 +21,14 @@ func (r *repositoryMock) Save(campaing *Campaign) error {
 
 func (r *repositoryMock) GetAll() ([]Campaign, error) {
 	return nil, nil
+}
+
+func (r *repositoryMock) GetByID(id string) (*Campaign, error) {
+	args := r.Called(id)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
+	return args.Get(0).(*Campaign), args.Error(1)
 }
 
 func TestCreateCampaign(t *testing.T) {
@@ -88,4 +97,48 @@ func TestCreate_ValidateRepositorySave(t *testing.T) {
 	assert.Error(t, err)
 	assert.ErrorIs(t, err, apperror.ErrInternal)
 
+}
+
+func TestService_GetByID(t *testing.T) {
+	campaignDTO := dto.CampaignDTO{
+		Name:    "Campaign X",
+		Content: "Body",
+		Emails:  []string{"email@gmail.com"},
+	}
+
+	campaign, _ := NewCampaign(campaignDTO.Name, campaignDTO.Content, campaignDTO.Emails)
+
+	t.Run("should return campaign successfully", func(t *testing.T) {
+		t.Parallel()
+
+		mockRepo := new(repositoryMock)
+		service := Service{Repository: mockRepo}
+
+		mockRepo.On("GetByID", mock.MatchedBy(func(id string) bool {
+			return id == campaign.ID
+		})).Return(campaign, nil)
+
+		campaignReturned, err := service.GetByID(campaign.ID)
+		assert.NoError(t, err)
+		assert.NotNil(t, campaignReturned)
+		assert.Equal(t, campaign.ID, campaignReturned.ID)
+		assert.Equal(t, campaign.Name, campaignReturned.Name)
+		assert.Equal(t, campaign.Content, campaignReturned.Content)
+		mockRepo.AssertExpectations(t)
+	})
+
+	t.Run("should return internal server error", func(t *testing.T) {
+		t.Parallel()
+
+		mockRepo := new(repositoryMock)
+		service := Service{Repository: mockRepo}
+
+		mockRepo.On("GetByID", mock.Anything).Return(nil, errors.New("error"))
+
+		campaignReturned, err := service.GetByID(campaign.ID)
+
+		assert.ErrorIs(t, err, apperror.ErrInternal)
+		assert.Nil(t, campaignReturned)
+		mockRepo.AssertExpectations(t)
+	})
 }

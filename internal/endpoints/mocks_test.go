@@ -19,3 +19,8 @@ func (m *campaignServiceMock) ListAll() ([]campaign.Campaign, error) {
 	args := m.Called()
 	return args.Get(0).([]campaign.Campaign), args.Error(1)
 }
+
+func (m *campaignServiceMock) GetByID(id string) (*dto.ResponseCampaignDTO, error) {
+	args := m.Called(id)
+	return args.Get(0).(*dto.ResponseCampaignDTO), args.Error(1)
+}
