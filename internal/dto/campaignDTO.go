@@ -6,3 +6,10 @@ type CampaignDTO struct {
 	Content string   `json:"content"`
 	Emails  []string `json:"emails"`
 }
+
+type ResponseCampaignDTO struct {
+	ID      string `json:"id"`
+	Name    string `json:"name"`
+	Content string `json:"content"`
+	Status  string `json:"status"`
+}

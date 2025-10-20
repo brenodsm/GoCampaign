@@ -1,6 +1,9 @@
 package database
 
 import (
+	"fmt"
+
+	"github.com/brenodsm/GoCampaign/internal/apperror"
 	"github.com/brenodsm/GoCampaign/internal/domain/campaign"
 )
 
@@ -13,6 +16,20 @@ func (c *CampaignRepository) Save(campaign *campaign.Campaign) error {
 	return nil
 }
 
-func (c CampaignRepository) GetAll() ([]campaign.Campaign, error) {
+func (c *CampaignRepository) GetAll() ([]campaign.Campaign, error) {
 	return c.campaigns, nil
+}
+
+func (c *CampaignRepository) GetByID(id string) (*campaign.Campaign, error) {
+	if len(c.campaigns) == 0 {
+		return nil, apperror.ErrCampaignNotFound
+	}
+	for i, camp := range c.campaigns {
+		fmt.Printf("Comparando camp.ID=%q com id=%q\n", camp.ID, id)
+		if camp.ID == id {
+			return &c.campaigns[i], nil
+		}
+	}
+
+	return nil, apperror.ErrCampaignNotFound
 }
