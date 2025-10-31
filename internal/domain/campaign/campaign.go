@@ -16,16 +16,18 @@ const (
 
 // Contact represents an email contact for a campaign.
 type Contact struct {
-	Email string `validate:"required,email"`
+	ID         string `gorm:"size:50"`
+	CampaignID string
+	Email      string `gorm:"size:100" validate:"required,email"`
 }
 
 // Campaign represents an email campaign with a name, content, contacts, and creation timestamp.
 type Campaign struct {
-	ID        string    `validate:"required"`
-	Name      string    `validate:"required,min=3,max=50"`
-	Content   string    `validate:"required,min=3,max=1024"`
+	ID        string    `gorm:"size:50" validate:"required"`
+	Name      string    `gorm:"size:50" validate:"required,min=3,max=50"`
+	Content   string    `gorm:"size:1024" validate:"required,min=3,max=1024"`
 	Contacts  []Contact `validate:"min=1,dive"`
-	Status    string
+	Status    string    `gorm:"size:20"`
 	CreatedOn time.Time
 }
 
@@ -61,6 +63,7 @@ func validate(name string, content string) (string, string) {
 func emailsToContacts(emails []string) (contacts []Contact) {
 	contacts = make([]Contact, len(emails))
 	for i, email := range emails {
+		contacts[i].ID = xid.New().String()
 		contacts[i].Email = strings.TrimSpace(email)
 	}
 	return contacts

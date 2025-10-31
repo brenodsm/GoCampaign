@@ -11,6 +11,7 @@ import (
 )
 
 type Config struct {
+	Env      string
 	Database string
 	Port     int
 }
@@ -48,7 +49,10 @@ func Load() (*Config, error) {
 
 	port := getEnvAsInt("API_PORT", 9000)
 
+	env := getEnv(strings.TrimSpace(strings.ToUpper("ENV")), "DEVELOPMENT")
+
 	return &Config{
+		Env:      env,
 		Database: database,
 		Port:     port,
 	}, nil
