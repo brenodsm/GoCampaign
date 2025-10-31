@@ -1,35 +1,27 @@
 package database
 
 import (
-	"fmt"
-
-	"github.com/brenodsm/GoCampaign/internal/apperror"
 	"github.com/brenodsm/GoCampaign/internal/domain/campaign"
+	"gorm.io/gorm"
 )
 
 type CampaignRepository struct {
-	campaigns []campaign.Campaign
+	Db *gorm.DB
 }
 
 func (c *CampaignRepository) Save(campaign *campaign.Campaign) error {
-	c.campaigns = append(c.campaigns, *campaign)
-	return nil
+	tx := c.Db.Create(campaign)
+	return tx.Error
 }
 
 func (c *CampaignRepository) GetAll() ([]campaign.Campaign, error) {
-	return c.campaigns, nil
+	var campaigns []campaign.Campaign
+	tx := c.Db.Find(&campaigns)
+	return campaigns, tx.Error
 }
 
 func (c *CampaignRepository) GetByID(id string) (*campaign.Campaign, error) {
-	if len(c.campaigns) == 0 {
-		return nil, apperror.ErrCampaignNotFound
-	}
-	for i, camp := range c.campaigns {
-		fmt.Printf("Comparando camp.ID=%q com id=%q\n", camp.ID, id)
-		if camp.ID == id {
-			return &c.campaigns[i], nil
-		}
-	}
-
-	return nil, apperror.ErrCampaignNotFound
+	var campaign campaign.Campaign
+	tx := c.Db.First(&campaign, "id = ?", id)
+	return &campaign, tx.Error
 }
