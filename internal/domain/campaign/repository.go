@@ -5,4 +5,5 @@ type Repository interface {
 	Save(campaign *Campaign) error
 	GetAll() ([]Campaign, error)
 	GetByID(id string) (*Campaign, error)
+	UpdateStatus(id, status string) error
 }

@@ -31,6 +31,11 @@ func (r *repositoryMock) GetByID(id string) (*Campaign, error) {
 	return args.Get(0).(*Campaign), args.Error(1)
 }
 
+func (r *repositoryMock) UpdateStatus(id, status string) error {
+	args := r.Called(id, status)
+	return args.Error(0)
+}
+
 func TestCreateCampaign(t *testing.T) {
 	t.Parallel()
 	campaign := dto.CampaignDTO{
