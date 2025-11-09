@@ -11,4 +11,5 @@ var (
 	ErrInvalidEmail       error = errors.New("invalid email")
 	ErrInvalidField       error = errors.New("invalid field")
 	ErrCampaignNotFound   error = errors.New("campaign not found")
+	ErrStatusInvalid      error = errors.New("campaign cannot be canceld")
 )

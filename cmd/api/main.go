@@ -50,7 +50,8 @@ func main() {
 
 	r.Post("/campaigns", handler.CampaignPost)
 	r.Get("/campaigns", handler.CampaignsGet)
-	r.Get("/campaign/{id}", handler.CampaignGetByID)
+	r.Get("/campaigns/{id}", handler.CampaignGetByID)
+	r.Patch("/campaigns/{id}/cancel", handler.CancelCampaign)
 
 	http.ListenAndServe(fmt.Sprintf(":%d", cfg.Port), r)
 }

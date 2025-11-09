@@ -12,6 +12,7 @@ const (
 	StatusPending  = "pending"
 	StatusStarting = "starting"
 	StatusDone     = "done"
+	StatusCancel   = "canceled"
 )
 
 // Contact represents an email contact for a campaign.
@@ -50,6 +51,10 @@ func NewCampaign(name string, content string, emails []string) (*Campaign, error
 		return nil, err
 	}
 	return campaign, nil
+}
+
+func (c *Campaign) Cancel() {
+	c.Status = StatusCancel
 }
 
 // validate checks if the campaign parameters are valid.
