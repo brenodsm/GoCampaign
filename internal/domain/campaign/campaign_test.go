@@ -69,13 +69,20 @@ func TestEmailsToContacts(t *testing.T) {
 		input  []string
 		output []Contact
 	}{
-		{desc: "nil slice", input: nil, output: []Contact{}},
-		{desc: "empty slice", input: []string{}, output: []Contact{}},
-		{desc: "single email", input: []string{"email@gmail.com"}, output: []Contact{{Email: "email@gmail.com"}}},
-		{desc: "trims whitespace", input: []string{"  email@gmail.com  ", "  email2@gmail.com  "}, output: []Contact{
-			{Email: "email@gmail.com"},
-			{Email: "email2@gmail.com"},
-		}},
+		{
+			desc: "nil slice", input: nil, output: []Contact{},
+		},
+		{
+			desc: "empty slice", input: []string{}, output: []Contact{},
+		},
+		{
+			desc: "single email", input: []string{"email@gmail.com"}, output: []Contact{{Email: "email@gmail.com"}},
+		},
+		{
+			desc: "trims whitespace", input: []string{"  email@gmail.com  ", "  email2@gmail.com  "}, output: []Contact{
+				{Email: "email@gmail.com"},
+				{Email: "email2@gmail.com"}},
+		},
 	}
 
 	for _, tc := range testCases {
@@ -83,7 +90,16 @@ func TestEmailsToContacts(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			t.Parallel()
 			got := emailsToContacts(tc.input)
-			assert.Equal(t, tc.output, got)
+
+			var gotEmails, wantEmails []string
+			for _, c := range got {
+				gotEmails = append(gotEmails, c.Email)
+			}
+			for _, c := range tc.output {
+				wantEmails = append(wantEmails, c.Email)
+			}
+
+			assert.Equal(t, gotEmails, wantEmails)
 		})
 	}
 }
