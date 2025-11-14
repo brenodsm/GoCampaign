@@ -13,6 +13,7 @@ const (
 	StatusStarting = "starting"
 	StatusDone     = "done"
 	StatusCancel   = "canceled"
+	StatusDelete   = "deleted"
 )
 
 // Contact represents an email contact for a campaign.
@@ -27,7 +28,7 @@ type Campaign struct {
 	ID        string    `gorm:"size:50" validate:"required"`
 	Name      string    `gorm:"size:50" validate:"required,min=3,max=50"`
 	Content   string    `gorm:"size:1024" validate:"required,min=3,max=1024"`
-	Contacts  []Contact `validate:"min=1,dive"`
+	Contacts  []Contact `gorm:"constraint:OnDelete:CASCADE;" validate:"min=1,dive"`
 	Status    string    `gorm:"size:20"`
 	CreatedOn time.Time
 }

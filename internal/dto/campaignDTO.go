@@ -8,8 +8,9 @@ type CampaignDTO struct {
 }
 
 type ResponseCampaignDTO struct {
-	ID      string `json:"id"`
-	Name    string `json:"name"`
-	Content string `json:"content"`
-	Status  string `json:"status"`
+	ID            string `json:"id"`
+	Name          string `json:"name"`
+	Content       string `json:"content"`
+	Status        string `json:"status"`
+	NumberOfEmails int    `json:"number_emails"`
 }

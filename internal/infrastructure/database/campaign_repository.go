@@ -1,6 +1,9 @@
 package database
 
 import (
+	"errors"
+
+	"github.com/brenodsm/GoCampaign/internal/apperror"
 	"github.com/brenodsm/GoCampaign/internal/domain/campaign"
 	"gorm.io/gorm"
 )
@@ -22,13 +25,36 @@ func (r *CampaignRepository) GetAll() ([]campaign.Campaign, error) {
 
 func (r *CampaignRepository) GetByID(id string) (*campaign.Campaign, error) {
 	var campaign campaign.Campaign
-	tx := r.Db.First(&campaign, "id = ?", id)
-	return &campaign, tx.Error
+	tx := r.Db.Preload("Contacts").First(&campaign, "id = ?", id)
+	if tx.Error != nil {
+		if errors.Is(tx.Error, gorm.ErrRecordNotFound) {
+			return nil, apperror.ErrCampaignNotFound
+		}
+		return nil, apperror.ErrInternal
+	}
+	return &campaign, nil
 }
 
 func (r *CampaignRepository) UpdateStatus(id, status string) error {
 	tx := r.Db.Model(&campaign.Campaign{}).
 		Where("id = ?", id).
 		Update("status", status)
-	return tx.Error
+	if tx.Error != nil {
+		if errors.Is(tx.Error, gorm.ErrRecordNotFound) {
+			return apperror.ErrCampaignNotFound
+		}
+		return apperror.ErrInternal
+	}
+	return nil
+}
+
+func (r *CampaignRepository) Delete(id string) error {
+	tx := r.Db.Select("Contacts").Delete(&campaign.Campaign{}, "id = ?", id)
+	if tx.Error != nil {
+		if errors.Is(tx.Error, gorm.ErrRecordNotFound) {
+			return apperror.ErrCampaignNotFound
+		}
+		return apperror.ErrInternal
+	}
+	return nil
 }
