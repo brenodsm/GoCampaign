@@ -6,4 +6,5 @@ type Repository interface {
 	GetAll() ([]Campaign, error)
 	GetByID(id string) (*Campaign, error)
 	UpdateStatus(id, status string) error
+	Delete(id string) error
 }
